@@ -16,6 +16,8 @@ import Calculator from "./Calculator";
 // --11. String length limit (change font size, science notation)
 // --12. Group delimiter
 // 13. Operations history
+// 14. Show history (with animation)
+// 15. Save current theme in LocalStorage
 
 
 function App() {

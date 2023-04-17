@@ -1,4 +1,4 @@
-export const keys = [
+export const buttons = [
   '7', '8', '9', 'Del',
   '4', '5', '6', '+',
   '1', '2', '3', '-',
@@ -10,8 +10,8 @@ const MODE_VAL = 'mode_val'
 const MODE_OP = 'mode_op'
 const MODE_RES = 'mode_res'
 
-const MAX_NUMBER = 1.0e15
-const MAX_DECIMAL = 10
+// const MAX_NUMBER = 1.0e15
+// const MAX_DECIMAL = 10
 const MAX_NORMAL = 9999999999
 
 
@@ -49,6 +49,8 @@ export const Calc = class {
           break;
         case '/':
           res = this.val2 / this.val1;
+          break;
+        default:
           break;
       }
       this.history.push({
@@ -118,11 +120,12 @@ export const Calc = class {
 
   get expr() {
     switch (this.mode) {
-      case MODE_VAL:
-      case MODE_OP:
-        return this.val2 !== null ? `${this.val2} ${this.op}` : '';
       case MODE_RES:
         return `${this.val2} ${this.op} ${this.val1} =`;
+      case MODE_VAL:
+      case MODE_OP:
+      default:
+        return this.val2 !== null ? `${this.val2} ${this.op}` : '';
     }
   }
 

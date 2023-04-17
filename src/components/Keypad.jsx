@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from "styled-components";
-import {keys} from "../utils/calc";
+import {buttons} from "../utils/calc";
 
 const Wrapper = styled.div`
   padding: 30px;
@@ -86,7 +86,7 @@ const Keypad = ({handleKey}) => {
   return (
     <Wrapper>
       <Pad tabIndex={0} onKeyDown={(e) => handleKeyPress(e)}>
-        {keys.slice(0, 16).map(k => {
+        {buttons.slice(0, 16).map(k => {
           if (k === 'Del' || k === 'Reset') {
             return (
             <ButtonBlue key={k} onClick={() => handleKey(k)}>{k}</ButtonBlue>

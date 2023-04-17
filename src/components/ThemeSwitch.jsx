@@ -3,6 +3,7 @@ import styled, {css, keyframes} from "styled-components";
 
 const slide = keyframes`
   0% { transform: translateX(0px) }
+//  50% { transform: translateX(50px) }
   100% { transform: translateX(50px) }
 `;
 
@@ -51,7 +52,7 @@ const SwitchButton = styled.div`
   //background-color: transparent;
   transition-property: left;
   // &:hover {
-  //   animation: ${slide} 0.5s ease-in;
+  //   animation: ${slide} 1s ease-in;
   // }
   ${props => props.active && css`
     background-color: var(--keys-red-bg);
