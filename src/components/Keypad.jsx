@@ -15,6 +15,7 @@ const Wrapper = styled.div`
     border-radius: 10px;
   }
 `;
+
 const Pad = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);

@@ -3,13 +3,11 @@ import styled, {css, keyframes} from "styled-components";
 
 const slide = keyframes`
   0% { transform: translateX(0px) }
-//  50% { transform: translateX(50px) }
-  100% { transform: translateX(50px) }
+  100% { transform: translateX(var(--theme-button-slide-x, 0)) }
 `;
 
 const Wrapper = styled.div`
   display: flex;
-  //flex-direction: row;
   align-items: end;
 `;
 
@@ -22,8 +20,6 @@ const Switch = styled.div`
 
 const SwitchLabels = styled.div`
   display: flex;
-  //flex-direction: row;
-  //justify-content: center;
   & > div {
     width: 22px;
     line-height: 22px;
@@ -37,9 +33,6 @@ const SwitchLabels = styled.div`
 const SwitchFrame = styled.div`
   padding: 3px 4px;
   display: flex;
-  //flex-direction: row;
-  //justify-content: center;
-  //align-items: center;
   border-radius: 15px;
   background-color: var(--keypad_bg);
 `;
@@ -49,13 +42,13 @@ const SwitchButton = styled.div`
   width: 17px;
   height: 17px;
   border-radius: 100%;
-  //background-color: transparent;
-  transition-property: left;
-  // &:hover {
-  //   animation: ${slide} 1s ease-in;
-  // }
+  cursor: pointer;
   ${props => props.active && css`
     background-color: var(--keys-red-bg);
+    cursor: auto;
+  `}
+  ${props => props.animate && css`
+    animation: ${slide} var(--theme-button-slide-time) ease-in-out;
   `}
 `;
 
@@ -71,14 +64,27 @@ const SwitchTitle = styled.div`
 const themes = ['theme1', 'theme2', 'theme3']
 
 const ThemeSwitch = () => {
-  const [activeTheme, setActiveTheme] = useState(themes[0])
+  const [activeTheme, setActiveTheme] = useState(0)
+  const [targetTheme, setTargetTheme] = useState(0)
 
   useEffect(() => {   //TODO: move outside?
-    document.body.setAttribute('data-theme', activeTheme);
+    document.body.setAttribute('data-theme', themes[activeTheme]);
   }, [activeTheme]);
 
+  useEffect(() => {
+    document.documentElement.style.setProperty('--theme-button-slide-x', `${(targetTheme - activeTheme) * 20}px`);
+  }, [targetTheme, activeTheme])
+
   const clickHandler = (key) => {
-    setActiveTheme(key)
+    setTargetTheme(key)
+    const color = getComputedStyle(document.documentElement).getPropertyValue('--theme-button-slide-x');
+    console.log(color);
+  }
+
+  const switchTheme = () => {
+    if (activeTheme !== targetTheme) {
+      setActiveTheme(targetTheme)
+    }
   }
 
   return (
@@ -91,8 +97,14 @@ const ThemeSwitch = () => {
           ))}
         </SwitchLabels>
         <SwitchFrame>
-          {themes.map(t => (
-            <SwitchButton key={t} active={activeTheme === t} onClick={() => clickHandler(t)} />
+          {themes.map((_, k) => (
+            <SwitchButton
+              key={k}
+              active={activeTheme === k}
+              onClick={() => clickHandler(k)}
+              animate={activeTheme !== targetTheme && activeTheme === k}
+              onAnimationEnd={activeTheme === k ? switchTheme : ()=>{}}
+            />
           ))}
         </SwitchFrame>
       </Switch>
