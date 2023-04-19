@@ -4,6 +4,7 @@ import Keypad from "./Keypad";
 import Screen from "./Screen";
 import {Calc} from "../utils/calc";
 import Header from "./Header";
+import {buttons} from "../utils/calc";
 
 const Wrapper = styled.div`
   width: 540px;
@@ -30,12 +31,12 @@ const Calculator = () => {
     const { key, target, repeat } = keydownEvent;
     console.log(key);
     if (repeat) return;
-    // if (blacklistedTargets.includes(target.tagName)) return;
-    // if (!shortcutKeys.includes(key)) return;
-    // if (!keys[key])
-    //   setKeys({ type: "set-key-down", key });
-    if(['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']) {
+    if (buttons.includes(key)) {
       handleKey(key)
+    } else if (key === 'Enter') {
+      handleKey('=')
+    } else if (key === 'Escape') {
+      handleKey('Reset')
     }
   }, []);
 

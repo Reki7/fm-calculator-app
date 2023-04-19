@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useRef} from 'react';
 import styled from "styled-components";
 import {buttons} from "../utils/calc";
 
@@ -21,7 +21,6 @@ const Pad = styled.div`
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: repeat(5, 62px);
   gap: 27px 24px;
-
   @media(max-width: 767px) {
     gap: 15px 13px;
   }
@@ -43,7 +42,6 @@ const Button = styled.button`
   &:hover {
     background-color: var(--keys-gray-hover);
   };
-  
   @media(max-width: 767px) {
     border-radius: 8px;
     font-size: 34px;
@@ -75,31 +73,35 @@ const ButtonRed = styled(ButtonBlue)`
   }
 `;
 
+const buttonRefs = {};
 
 const Keypad = ({handleKey}) => {
-  const handleKeyPress = (event) => {   // TODO: complete
-    console.log('press: ', event.key)
-    // if(event.key === 'Enter'){
-    //   console.log('enter press here! ')
-    // }
-  }
+  // buttons.forEach(k => buttonRefs[k] = useRef(null))
 
   return (
     <Wrapper>
-      <Pad tabIndex={0} onKeyDown={(e) => handleKeyPress(e)}>
+      <Pad>
         {buttons.slice(0, 16).map(k => {
-          if (k === 'Del' || k === 'Reset') {
+          if (k === 'Delete') {
             return (
-            <ButtonBlue key={k} onClick={() => handleKey(k)}>{k}</ButtonBlue>
+              <ButtonBlue key={k} onClick={() => handleKey(k)} >{'Del'}</ButtonBlue>
             )
           } else {
             return (
-              <Button key={k} onClick={() => handleKey(k)}>{k}</Button>
+              <Button key={k} onClick={() => handleKey(k)} >{k}</Button>
             )
           }
         })}
-        <ButtonBlue onClick={() => handleKey('Reset')} style={{gridColumn: '1/3'}}>Reset</ButtonBlue>
-        <ButtonRed onClick={() => handleKey('=')} style={{gridColumn: '3/5'}}>=</ButtonRed>
+        <ButtonBlue
+          onClick={() => handleKey('Reset')}
+          style={{gridColumn: '1/3'}}
+          // ref={buttonRefs['Reset']}
+        >Reset</ButtonBlue>
+        <ButtonRed
+          onClick={() => handleKey('=')}
+          style={{gridColumn: '3/5'}}
+          // ref={buttonRefs['=']}
+        >=</ButtonRed>
       </Pad>
     </Wrapper>
   );
