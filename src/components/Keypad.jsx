@@ -1,6 +1,7 @@
-import React, {useRef} from 'react';
+import React, {useContext, useRef} from 'react';
 import styled from "styled-components";
 import {buttons} from "../utils/calc";
+import {KeydownContext} from "./Calculator";
 
 const Wrapper = styled.div`
   padding: 30px;
@@ -26,6 +27,8 @@ const Pad = styled.div`
   }
 `;
 
+
+
 const Button = styled.button`
   padding: 16px 0;
   text-align: center;
@@ -42,7 +45,9 @@ const Button = styled.button`
   &:hover {
     background-color: var(--keys-gray-hover);
   };
-  @media(max-width: 767px) {
+  &.hovered {
+    background-color: var(--keys-gray-hover);
+  };  @media(max-width: 767px) {
     border-radius: 8px;
     font-size: 34px;
   }
@@ -73,34 +78,49 @@ const ButtonRed = styled(ButtonBlue)`
   }
 `;
 
-const buttonRefs = {};
+
+
+const CalcButton = ({id = '', btnType = 'grayBtn', ...rest}) => {
+  // const keyPressed = useContext(KeydownContext);
+  console.log('render: ', id)
+
+  const keyPressed = useContext(KeydownContext)
+  if (keyPressed) {
+  }
+
+  let Btn = Button;
+  if (btnType === 'blueBtn')
+    Btn = ButtonBlue;
+  else if (btnType === 'redBtn')
+    Btn = ButtonRed;
+
+  return (
+    <Btn id={id} className={keyPressed === id && 'hovered'} {...rest} />
+  )
+};
 
 const Keypad = ({handleKey}) => {
-  // buttons.forEach(k => buttonRefs[k] = useRef(null))
-
+  console.log('-render KeyPad')
   return (
     <Wrapper>
       <Pad>
         {buttons.slice(0, 16).map(k => {
-          if (k === 'Delete') {
-            return (
-              <ButtonBlue key={k} onClick={() => handleKey(k)} >{'Del'}</ButtonBlue>
-            )
-          } else {
-            return (
-              <Button key={k} onClick={() => handleKey(k)} >{k}</Button>
-            )
-          }
+          return (
+            <CalcButton
+              key={k}
+              id={k}
+              onClick={() => handleKey(k)}
+              btnType={k === 'Delete' ? 'blueBtn' : 'grayBtn'}
+            >{k !== 'Delete' ? k : 'Del'}</CalcButton>
+          )
         })}
         <ButtonBlue
           onClick={() => handleKey('Reset')}
           style={{gridColumn: '1/3'}}
-          // ref={buttonRefs['Reset']}
         >Reset</ButtonBlue>
         <ButtonRed
           onClick={() => handleKey('=')}
           style={{gridColumn: '3/5'}}
-          // ref={buttonRefs['=']}
         >=</ButtonRed>
       </Pad>
     </Wrapper>

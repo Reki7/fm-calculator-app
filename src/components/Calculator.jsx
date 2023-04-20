@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {createContext, useCallback, useEffect, useState} from 'react';
 import styled from "styled-components";
 import Keypad from "./Keypad";
 import Screen from "./Screen";
@@ -22,21 +22,25 @@ const Wrapper = styled.div`
   }
 `;
 
+export const KeydownContext = createContext(null);
+const calc = new Calc()
+
 const Calculator = () => {
-  const [calc, setCalc] = useState(new Calc());
+  // const [calc, setCalc] = useState(new Calc());
   const [screenValue, setScreenValue] = useState('0');
   const [screenExpr, setScreenExpr] = useState('');
+  const [lastKeyPressed, setLastKeyPressed] = useState('');
+  const [keyPressed, setKeyPressed] = useState(null);
 
   const keydownListener = useCallback(keydownEvent => {
-    const { key, target, repeat } = keydownEvent;
+    let { key, target, repeat } = keydownEvent;
     console.log(key);
     if (repeat) return;
+    if (key === 'Enter') key = '='
+    if (key === 'Escape') key = 'Reset'
     if (buttons.includes(key)) {
-      handleKey(key)
-    } else if (key === 'Enter') {
-      handleKey('=')
-    } else if (key === 'Escape') {
-      handleKey('Reset')
+      setLastKeyPressed(key);
+      handleKey(key);
     }
   }, []);
 
@@ -45,19 +49,30 @@ const Calculator = () => {
     return () => window.removeEventListener("keydown", keydownListener, true);
   }, [keydownListener]);
 
-  const handleKey = (key) => {
-    // console.log(key);
+  useEffect(() => {
+    if (!keyPressed) {
+      setKeyPressed(lastKeyPressed);
+      const handler = setTimeout(() => {
+        setKeyPressed(null);
+      }, 200);
+    }
+  }, [lastKeyPressed])
+
+  const handleKey = useCallback((key) => {
     calc.putKey(key);         //TODO: useEffect?
     setScreenValue(calc.result);
     setScreenExpr(calc.expr);
-  }
+  }, [])
 
+  console.log('--render Calculator')
   return (
-    <Wrapper>
-      <Header />
-      <Screen value={screenValue} expr={screenExpr}/>
-      <Keypad handleKey={handleKey}  />
-    </Wrapper>
+    <KeydownContext.Provider value={keyPressed}>
+      <Wrapper>
+        <Header />
+        <Screen value={screenValue} expr={screenExpr}/>
+        <Keypad handleKey={handleKey}  />
+      </Wrapper>
+    </KeydownContext.Provider>
   );
 };
 
