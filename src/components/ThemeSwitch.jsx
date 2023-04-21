@@ -49,6 +49,7 @@ const SwitchButton = styled.div`
   `}
   ${props => props.animate && css`
     animation: ${slide} var(--theme-button-slide-time) ease-in-out;
+    animation-fill-mode: forwards;
   `}
 `;
 

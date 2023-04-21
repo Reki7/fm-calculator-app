@@ -1,5 +1,5 @@
 export const buttons = [
-  '7', '8', '9', 'Delete',
+  '7', '8', '9', 'Del',
   '4', '5', '6', '+',
   '1', '2', '3', '-',
   '.', '0', '/', 'x',
@@ -53,12 +53,13 @@ export const Calc = class {
         default:
           break;
       }
+      this.res = res;
       this.history.push({
         left: this.val2,
         right: this.val1,
-        op: this.op
+        op: this.op,
+        res: this.res,
       })
-      this.res = res;
       this.mode = MODE_RES;
     }
   }

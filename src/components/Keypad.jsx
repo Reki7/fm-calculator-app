@@ -18,6 +18,7 @@ const Wrapper = styled.div`
 `;
 
 const Pad = styled.div`
+  position: relative;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: repeat(5, 62px);
@@ -46,8 +47,12 @@ const Button = styled.button`
     background-color: var(--keys-gray-hover);
   };
   &.hovered {
+    box-shadow: none;
+    position: relative;
+    top: 4px;
     background-color: var(--keys-gray-hover);
-  };  @media(max-width: 767px) {
+  };  
+  @media(max-width: 767px) {
     border-radius: 8px;
     font-size: 34px;
   }
@@ -63,6 +68,9 @@ const ButtonBlue = styled(Button)`
   &:hover {
     background-color: var(--keys-blue-hover);
   };
+  &.hovered {
+    background-color: var(--keys-blue-hover);
+  };
   @media(max-width: 767px) {
     padding: 24px 0;
     font-size: 20px;
@@ -75,18 +83,16 @@ const ButtonRed = styled(ButtonBlue)`
   box-shadow: var(--keys-red-shadow);
   &:hover {
     background-color: var(--keys-red-hover);
-  }
+  };
+  &.hovered {
+    background-color: var(--keys-red-hover);
+  };
 `;
 
 
 
-const CalcButton = ({id = '', btnType = 'grayBtn', ...rest}) => {
-  // const keyPressed = useContext(KeydownContext);
-  console.log('render: ', id)
-
+const CalcButton = ({id = '', btnType = 'grayBtn', clickHandler = () => {}, ...rest}) => {
   const keyPressed = useContext(KeydownContext)
-  if (keyPressed) {
-  }
 
   let Btn = Button;
   if (btnType === 'blueBtn')
@@ -95,12 +101,15 @@ const CalcButton = ({id = '', btnType = 'grayBtn', ...rest}) => {
     Btn = ButtonRed;
 
   return (
-    <Btn id={id} className={keyPressed === id && 'hovered'} {...rest} />
+    <Btn
+      id={id}
+      className={keyPressed === id && 'hovered'}
+      onClick={() => clickHandler(id)}
+      {...rest} />
   )
 };
 
 const Keypad = ({handleKey}) => {
-  console.log('-render KeyPad')
   return (
     <Wrapper>
       <Pad>
@@ -109,19 +118,23 @@ const Keypad = ({handleKey}) => {
             <CalcButton
               key={k}
               id={k}
-              onClick={() => handleKey(k)}
-              btnType={k === 'Delete' ? 'blueBtn' : 'grayBtn'}
-            >{k !== 'Delete' ? k : 'Del'}</CalcButton>
+              btnType={k === 'Del' ? 'blueBtn' : 'grayBtn'}
+              clickHandler={handleKey}
+            >{k}</CalcButton>
           )
         })}
-        <ButtonBlue
-          onClick={() => handleKey('Reset')}
+        <CalcButton
+          id='Reset'
+          btnType='blueBtn'
+          clickHandler={handleKey}
           style={{gridColumn: '1/3'}}
-        >Reset</ButtonBlue>
-        <ButtonRed
-          onClick={() => handleKey('=')}
+        >Reset</CalcButton>
+        <CalcButton
+          id='='
+          btnType='redBtn'
+          clickHandler={handleKey}
           style={{gridColumn: '3/5'}}
-        >=</ButtonRed>
+        >=</CalcButton>
       </Pad>
     </Wrapper>
   );
