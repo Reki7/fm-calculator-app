@@ -2,9 +2,9 @@ import React, {createContext, useCallback, useEffect, useState} from 'react';
 import styled from "styled-components";
 import Keypad from "./Keypad";
 import Screen from "./Screen";
-import {Calc} from "../utils/calc";
+import {Calc} from "../services/calc";
 import Header from "./Header";
-import {buttons} from "../utils/calc";
+import {buttons} from "../services/calc";
 import {useKeypress} from "../hooks/useKeypress";
 
 const Wrapper = styled.div`

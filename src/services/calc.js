@@ -45,6 +45,7 @@ export const Calc = class {
           res = this.val2 - this.val1;
           break;
         case 'x':
+        case '*':
           res = this.val2 * this.val1;
           break;
         case '/':
@@ -91,7 +92,7 @@ export const Calc = class {
           this.value = this.value === '0' ? key : this.value + key;
         }
       }
-    } else if (['+', '-', '/', 'x'].includes(key)) {
+    } else if (['+', '-', '/', 'x', '*'].includes(key)) {
       if (this.mode === MODE_RES) {
         this.val2 = this.res;
         this.value = this.res.toString();
@@ -137,7 +138,7 @@ export const Calc = class {
       // notation: this.val1 <= MAX_NORMAL ? "standard" : "scientific",    // "standard", "scientific", "engineering", "compact"
     }
     const ret_val = this.mode === MODE_RES ? this.res : this.val1;
-    return ret_val <= MAX_NORMAL ? ret_val.toLocaleString('en-US', options) : ret_val.toExponential(8);
+    return ret_val <= MAX_NORMAL ? ret_val.toLocaleString('fr-FR', options) : ret_val.toExponential(8);
     // return (this.mode === MODE_RES ? this.res : this.val1).toLocaleString('en-US', options);
   }
 }

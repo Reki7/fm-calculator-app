@@ -1,5 +1,5 @@
 import './App.css';
-import Calculator from "./Calculator";
+import Calculator from "./components/Calculator";
 
 //TODO:
 // --0. Period
