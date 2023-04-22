@@ -1,5 +1,5 @@
 import {useCallback, useEffect, useState} from "react";
-import {buttons} from "../utils/calc";
+import {buttons} from "../services/calc";
 
 export function useKeypress(handleKeyPress) {
   const [lastKeyPressed, setLastKeyPressed] = useState({});

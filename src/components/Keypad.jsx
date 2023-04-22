@@ -1,6 +1,6 @@
 import React, {useContext, useRef} from 'react';
 import styled from "styled-components";
-import {buttons} from "../utils/calc";
+import {buttons} from "../services/calc";
 import {KeydownContext} from "./Calculator";
 
 const Wrapper = styled.div`
