@@ -2,9 +2,8 @@ import React, {createContext, useCallback, useEffect, useState} from 'react';
 import styled from "styled-components";
 import Keypad from "./Keypad";
 import Screen from "./Screen";
-import {Calc} from "../services/calc";
 import Header from "./Header";
-import {buttons} from "../services/calc";
+import {Calc, eventTypes} from "../services/calc2";
 import {useKeypress} from "../hooks/useKeypress";
 
 const Wrapper = styled.div`
@@ -32,6 +31,15 @@ const Calculator = () => {
   const [screenExpr, setScreenExpr] = useState('');
   const [keyPressed, setKeyPressed] = useState(null);
 
+  // let calc;
+  const cb = (payload) => {
+    console.log("CB: ", payload);
+  }
+  useEffect(() => {
+    // calc = new Calc()
+    calc.addListener(eventTypes.EVENT_INPUT, cb)
+  }, [])
+
   const handleKeyPress = useCallback(key => {
     setKeyPressed(key);
     handleKey(key);
@@ -41,7 +49,7 @@ const Calculator = () => {
 
   const handleKey = useCallback((key) => {
     calc.putKey(key);         //TODO: useEffect?
-    setScreenValue(calc.result);
+    setScreenValue(calc.output);
     setScreenExpr(calc.expr);
   }, [])
 

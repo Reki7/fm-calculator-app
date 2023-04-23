@@ -20,7 +20,7 @@ export const Calc = class {
     this.reset = this.reset.bind(this);
     this.putKey = this.putKey.bind(this);
     this.calc = this.calc.bind(this);
-    this.history = [];
+    this._history = [];
     this.reset();
   }
 
@@ -55,7 +55,7 @@ export const Calc = class {
           break;
       }
       this.res = res;
-      this.history.push({
+      this._history.push({
         left: this.val2,
         right: this.val1,
         op: this.op,

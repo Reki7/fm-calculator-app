@@ -1,7 +1,7 @@
-import React, {useContext, useRef} from 'react';
+import React from 'react';
 import styled from "styled-components";
-import {buttons} from "../services/calc";
-import {KeydownContext} from "./Calculator";
+import {acceptedKeys} from "../services/calc2";
+import CalcButton from "./CalcButton";
 
 const Wrapper = styled.div`
   padding: 30px;
@@ -29,112 +29,36 @@ const Pad = styled.div`
 `;
 
 
-
-const Button = styled.button`
-  padding: 16px 0;
-  text-align: center;
-  border: none;
-  border-radius: 15px;
-  cursor: pointer;
-  font-family: 'League Spartan', sans-serif;
-  font-weight: 700;
-  font-size: 40px;
-  color: var(--keys-gray-text-color);
-  background-color: var(--keys-gray-bg);
-  box-shadow: var(--keys-gray-shadow);
-  outline: none;
-  &:hover {
-    background-color: var(--keys-gray-hover);
-  };
-  &.hovered {
-    box-shadow: none;
-    position: relative;
-    top: 4px;
-    background-color: var(--keys-gray-hover);
-  };  
-  @media(max-width: 767px) {
-    border-radius: 8px;
-    font-size: 34px;
-  }
-`;
-
-const ButtonBlue = styled(Button)`
-  padding: 22px 0;
-  font-size: 28px;
-  text-transform: uppercase;
-  color: var(--keys-blue-text-color);
-  background-color: var(--keys-blue-bg);
-  box-shadow: var(--keys-blue-shadow);
-  &:hover {
-    background-color: var(--keys-blue-hover);
-  };
-  &.hovered {
-    background-color: var(--keys-blue-hover);
-  };
-  @media(max-width: 767px) {
-    padding: 24px 0;
-    font-size: 20px;
-  };
-`;
-
-const ButtonRed = styled(ButtonBlue)`
-  color: var(--keys-red-text-color);
-  background-color: var(--keys-red-bg);
-  box-shadow: var(--keys-red-shadow);
-  &:hover {
-    background-color: var(--keys-red-hover);
-  };
-  &.hovered {
-    background-color: var(--keys-red-hover);
-  };
-`;
-
-
-
-const CalcButton = ({id = '', btnType = 'grayBtn', clickHandler = () => {}, ...rest}) => {
-  const keyPressed = useContext(KeydownContext)
-
-  let Btn = Button;
-  if (btnType === 'blueBtn')
-    Btn = ButtonBlue;
-  else if (btnType === 'redBtn')
-    Btn = ButtonRed;
-
-  return (
-    <Btn
-      id={id}
-      className={keyPressed === id && 'hovered'}
-      onClick={() => clickHandler(id)}
-      {...rest} />
-  )
-};
+export const buttonsLayout = [
+  '7', '8', '9', 'Delete',
+  '4', '5', '6', '+',
+  '1', '2', '3', '-',
+  '.', '0', '/', 'x',
+  'Reset', '=',
+]
 
 const Keypad = ({handleKey}) => {
   return (
     <Wrapper>
       <Pad>
-        {buttons.slice(0, 16).map(k => {
+        {buttonsLayout.map(k => {
+          const { value, label, type } = acceptedKeys[k]
           return (
             <CalcButton
-              key={k}
-              id={k}
-              btnType={k === 'Del' ? 'blueBtn' : 'grayBtn'}
+              key={value}
+              id={value}
+              btnType={type}
               clickHandler={handleKey}
-            >{k}</CalcButton>
+              style={
+                k === 'Reset'
+                  ? {gridColumn: '1/3'}
+                  : k === '='
+                    ? {gridColumn: '3/5'}
+                    : {}
+              }
+            >{label}</CalcButton>
           )
         })}
-        <CalcButton
-          id='Reset'
-          btnType='blueBtn'
-          clickHandler={handleKey}
-          style={{gridColumn: '1/3'}}
-        >Reset</CalcButton>
-        <CalcButton
-          id='='
-          btnType='redBtn'
-          clickHandler={handleKey}
-          style={{gridColumn: '3/5'}}
-        >=</CalcButton>
       </Pad>
     </Wrapper>
   );

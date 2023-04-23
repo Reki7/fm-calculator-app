@@ -79,7 +79,7 @@ const ThemeSwitch = () => {
   const clickHandler = (key) => {
     setTargetTheme(key)
     const color = getComputedStyle(document.documentElement).getPropertyValue('--theme-button-slide-x');
-    console.log(color);
+    // console.log(color);
   }
 
   const switchTheme = () => {
