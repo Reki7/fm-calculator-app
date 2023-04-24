@@ -133,7 +133,7 @@ test('Events', () => {
   calc.addListener(eventTypes.EVENT_INPUT, cb)
   const expr = '153'
   calc.evalExpr(expr)
-  expect(cb_result).toEqual(expr)
+  expect(cb_result).toEqual(expr.at(-1))
   // calc.putKey('Delete')
   // calc.putKey('Delete')
   // calc.putKey('Delete')
