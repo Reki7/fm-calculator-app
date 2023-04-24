@@ -4,7 +4,7 @@ const KEY_MINUS = '-'
 const KEY_MUL = '*'
 const KEY_DIV = '/'
 const KEY_DELETE = 'Delete'
-const KEY_RESET = 'Reset'
+const KEY_RESET = 'Escape'
 
 const KEY_TYPE_INPUT = 'input'
 const KEY_TYPE_OPERATION = 'operation'
@@ -105,7 +105,8 @@ export const calc_keys = [
   {
     label: 'Del',
     value: KEY_DELETE,
-    type: KEY_TYPE_COMMAND
+    type: KEY_TYPE_COMMAND,
+    aliases: ['Backspace']
   },
   {
     label: 'Reset',
@@ -122,9 +123,12 @@ export const calc_keys = [
 export let acceptedKeys = {}
 calc_keys.forEach(key => {
   acceptedKeys[key.value] = key
-  if (key.label) {
+  if (key.label)
     acceptedKeys[key.label] = key
-  }
+  if (key.aliases)
+    key.aliases.forEach(alias => {
+      acceptedKeys[alias] = key
+    })
 })
 
 
@@ -218,7 +222,7 @@ export const Calc = class {
             this._inputBuff = '0'
           this._inputBuff += KEY_PERIOD;
         }
-        this.broadcast(EVENT_INPUT, this._inputBuff)
+        // this.broadcast(EVENT_INPUT, this._inputBuff)
         break;
       case KEY_TYPE_OPERATION:
         if (this._inputBuff) {
@@ -266,6 +270,7 @@ export const Calc = class {
         }
         break;
     }
+    this.broadcast(EVENT_INPUT, key.value)
     return key.value
   }
 

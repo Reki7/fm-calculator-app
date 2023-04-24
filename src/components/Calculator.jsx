@@ -3,8 +3,8 @@ import styled from "styled-components";
 import Keypad from "./Keypad";
 import Screen from "./Screen";
 import Header from "./Header";
-import {useKeypress} from "../hooks/useKeypress";
 import {useCalc} from "../hooks/useCalc";
+import {useButtonPressed} from "../hooks/useButtonPressed";
 
 const Wrapper = styled.div`
   width: 540px;
@@ -25,24 +25,30 @@ const Wrapper = styled.div`
 export const KeydownContext = createContext(null);
 
 const Calculator = () => {
-  const [keyPressed, setKeyPressed] = useState(null);
-  const { output, expression, putKey } = useCalc()
+  const [buttonPressed, setButtonPressed] = useState(null);
+  // const handleCalcInput = useButtonPressed(setButtonPressed)
 
-  const handleKeyPress = useCallback(key => {
-    console.log('handleKeyPress: ', key)
-    if (key)
-    setKeyPressed(putKey(key));
-    // putKey(key);
-  })
+  const [triggerKey, setTriggerKey] = useState({});
+  const handleCalcInput = (key) => {
+    setTriggerKey({key})
+  }
+  useEffect(() => {
+    if (!buttonPressed) {
+      setButtonPressed(triggerKey.key);
+      setTimeout(() => {
+        setButtonPressed(null);
+      }, 150);
+    }
+  }, [triggerKey]);
 
-  const keyHandler = useKeypress(handleKeyPress)
+  const { output, expression, putKey } = useCalc(handleCalcInput)
 
   return (
-    <KeydownContext.Provider value={keyPressed}>
+    <KeydownContext.Provider value={buttonPressed}>
       <Wrapper>
         <Header />
         <Screen value={output} expr={expression}/>
-        <Keypad handleKey={keyHandler}  />
+        <Keypad handleKey={putKey}  />
       </Wrapper>
     </KeydownContext.Provider>
   );

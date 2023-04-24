@@ -1,4 +1,4 @@
-import {useEffect, useRef, useState} from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 import {Calc, eventTypes} from "../services/calc2.mjs";
 
 export const useCalc = (onInput = null) => {
@@ -8,21 +8,18 @@ export const useCalc = (onInput = null) => {
 
   const calcInstance = () => calc?.current
 
-  const inputHandler = (key) => {
-    // console.log("inputHandler: ", key, calcInstance())
-
-    if (onInput) {
-      onInput(key)
-    }
+  const calcInputHandler = (key) => {
     if (calcInstance() && output !== calcInstance().output) {
       setOutput(calcInstance().output)
     }
     if (calcInstance() && expression !== calcInstance().expr)
       setExpression(calcInstance().expr)
+    if (onInput) {
+      onInput(key)
+    }
   }
 
-  const calcHandler = () => {
-    // console.log("calcHandler: ", calcInstance().output)
+  const calcCalculateHandler = () => {
     setOutput(calcInstance().output)
     setExpression(calcInstance().expr)
   }
@@ -32,13 +29,24 @@ export const useCalc = (onInput = null) => {
   }
 
   useEffect(() => {
-    calcInstance().addListener(eventTypes.EVENT_INPUT, inputHandler)
-    calcInstance().addListener(eventTypes.EVENT_CALC, calcHandler)
+    calcInstance().addListener(eventTypes.EVENT_INPUT, calcInputHandler)
+    calcInstance().addListener(eventTypes.EVENT_CALC, calcCalculateHandler)
     setOutput(calcInstance().output)
     setExpression(calcInstance().expr)
-
-    // console.log('useEffect out: ', calcInstance())
   }, [])
+
+  const keydownListener = useCallback(keydownEvent => {
+    let { key, target, repeat } = keydownEvent;
+    console.log(key);
+    if (repeat)
+      return;
+    putKey(key)
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("keydown", keydownListener, true);
+    return () => window.removeEventListener("keydown", keydownListener, true);
+  }, [keydownListener]);
 
 
   return { output, expression, putKey }
