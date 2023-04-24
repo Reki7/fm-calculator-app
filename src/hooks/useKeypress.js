@@ -1,7 +1,7 @@
 import {useCallback, useEffect, useState} from "react";
 import {buttons} from "../services/calc";
 
-export function useKeypress(handleKeyPress) {
+export function useKeypress(handleKeyPress, pressedDuration = 150) {
   const [lastKeyPressed, setLastKeyPressed] = useState({});
   const [keyPressed, setKeyPressed] = useState(null);
 
@@ -13,14 +13,14 @@ export function useKeypress(handleKeyPress) {
   const keydownListener = useCallback(keydownEvent => {
     let { key, target, repeat } = keydownEvent;
     console.log(key);
-    if (repeat) return;
-    if (key === 'Enter') key = '='
-    if (key === 'Delete' || key === 'Backspace') key = 'Del'
-    if (key === 'Escape') key = 'Reset'
-    if (!keyPressed && buttons.includes(key)) {
-      setLastKeyPressed({key});
-    }
+    if (repeat)
+      return;
+    keyHandler(key)
   }, []);
+
+  const keyHandler = (key) => {
+    setLastKeyPressed({key});
+  }
 
   useEffect(() => {
     window.addEventListener("keydown", keydownListener, true);
@@ -30,9 +30,9 @@ export function useKeypress(handleKeyPress) {
   useEffect(() => {
     if (!keyPressed) {
       onKeyPress(lastKeyPressed.key);
-      const handler = setTimeout(() => {
+      setTimeout(() => {
         onKeyPress(null);
-      }, 200);
+      }, pressedDuration);
     }
 
     return () => {
@@ -40,5 +40,5 @@ export function useKeypress(handleKeyPress) {
     }
   }, [lastKeyPressed]);
 
-  return () => keyPressed;
+  return keyHandler;
 }

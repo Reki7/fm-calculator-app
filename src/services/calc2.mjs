@@ -206,7 +206,7 @@ export const Calc = class {
 
   putKey(s) {
     if (!(s in acceptedKeys))
-      return
+      return null
     const key = acceptedKeys[s]
     // console.log(key, this)
     switch (key.type) {
@@ -266,6 +266,7 @@ export const Calc = class {
         }
         break;
     }
+    return key.value
   }
 
   calculate() {
@@ -340,9 +341,9 @@ export const Calc = class {
 }
 
 
-const calc = new Calc()
-
-const expr = '1.56 + 5 - 3 ='
-calc.evalExpr('-2+3+5*4=')
-let r = calc.output;
-console.log(r)
+// const calc = new Calc()
+//
+// const expr = '1.56 + 5 - 3 ='
+// calc.evalExpr('-2+3+5*4=')
+// let r = calc.output;
+// console.log(r)
