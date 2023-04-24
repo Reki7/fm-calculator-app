@@ -333,6 +333,10 @@ export const Calc = class {
     return res;
   }
 
+  get history() {
+    return this._history.toReversed();
+  }
+
   // get result() {
   //   // return this.mode === MODE_RES ? this.res.toString() : this.value;
   //   let options = {

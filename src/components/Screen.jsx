@@ -12,6 +12,7 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  position: relative;
   
   @media (max-width: 767px) {
     height: 90px;
@@ -42,11 +43,23 @@ const Expr = styled.div`
   height: 20px;
   color: var(--keys-blue-bg);
   text-align: right;
+  //cursor: pointer;
+`;
+
+const HistoryIcon = styled.div`
+  position: absolute;
+  bottom: 8px;
+  right: 30px;
+  color: var(--keys-blue-bg);
+  cursor: pointer;
+  @media(max-width: 767px) {
+    display: none;
+  };
 `;
 
 const SCREEN_MAX_DIGS = 12
 
-const Screen = ({value = '0', expr=''}) => {
+const Screen = ({value = '0', expr= '', historyClick = ()=>{}}) => {
   const [scale, setScale] = useState(1)
 
   useEffect(() => {
@@ -57,8 +70,9 @@ const Screen = ({value = '0', expr=''}) => {
 
   return (
     <Wrapper>
-      <Expr>{expr}</Expr>
+      <Expr onClick={expr && historyClick} style={expr ? {cursor: 'pointer'} : {}}>{expr}</Expr>
       <Output scale={scale}>{value}</Output>
+      <HistoryIcon className="material-symbols-outlined" onClick={historyClick}>history</HistoryIcon>
     </Wrapper>
   );
 };

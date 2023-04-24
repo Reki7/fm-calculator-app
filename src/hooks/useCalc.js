@@ -48,6 +48,7 @@ export const useCalc = (onInput = null) => {
     return () => window.removeEventListener("keydown", keydownListener, true);
   }, [keydownListener]);
 
+  const history = calcInstance().history;
 
-  return { output, expression, putKey }
+  return { output, expression, history, putKey }
 }

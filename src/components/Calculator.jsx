@@ -5,6 +5,7 @@ import Screen from "./Screen";
 import Header from "./Header";
 import {useCalc} from "../hooks/useCalc";
 import {useButtonPressed} from "../hooks/useButtonPressed";
+import History from "./History";
 
 const Wrapper = styled.div`
   width: 540px;
@@ -26,6 +27,7 @@ export const KeydownContext = createContext(null);
 
 const Calculator = () => {
   const [buttonPressed, setButtonPressed] = useState(null);
+  const [showHistory, setShowHistory] = useState(false);
   // const handleCalcInput = useButtonPressed(setButtonPressed)
 
   const [triggerKey, setTriggerKey] = useState({});
@@ -41,14 +43,22 @@ const Calculator = () => {
     }
   }, [triggerKey]);
 
-  const { output, expression, putKey } = useCalc(handleCalcInput)
+  const { output, expression, history, putKey } = useCalc(handleCalcInput)
+
+  const historyClickHandler = () => {
+    setShowHistory(prev => !prev)
+  }
 
   return (
     <KeydownContext.Provider value={buttonPressed}>
       <Wrapper>
         <Header />
-        <Screen value={output} expr={expression}/>
-        <Keypad handleKey={putKey}  />
+        <Screen value={output} expr={expression} historyClick={historyClickHandler}/>
+        {
+          showHistory
+          ? <History history={history} />
+          : <Keypad handleKey={putKey}  />
+        }
       </Wrapper>
     </KeydownContext.Provider>
   );

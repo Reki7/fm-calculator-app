@@ -7,7 +7,7 @@ import Calculator from "./components/Calculator";
 // --2. Styling service buttons (Del, Reset, =)
 // --3. Header component
 // --4. Themes
-// 5. Keyboard input
+// --5. Keyboard input
 // 6. Active key visualize
 // --7. Keypad layout (one grid)
 // 8. Tests (class Calc)
