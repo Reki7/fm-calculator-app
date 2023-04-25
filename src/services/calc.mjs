@@ -134,7 +134,8 @@ calc_keys.forEach(key => {
 
 // const MAX_NUMBER = 1.0e15
 // const MAX_DECIMAL = 10
-const MAX_NORMAL = 9999999999
+const MAX_FRACTIONAL_LENGTH = 10;
+const MAX_NORMAL = 9999999999;
 
 
 /*
@@ -185,6 +186,7 @@ export const Calc = class {
     this._left = null;
     this._right = null;
     this._operation = null;
+    this._lastKey = null;
     this._result = 0;
     this._inputBuff = '';
   }
@@ -208,6 +210,10 @@ export const Calc = class {
     [...s].forEach((key) => this.putKey(key))
   }
 
+  round(n) {
+    return parseFloat(n.toFixed(MAX_FRACTIONAL_LENGTH))
+  }
+
   putKey(s) {
     if (!(s in acceptedKeys))
       return null
@@ -215,6 +221,8 @@ export const Calc = class {
     // console.log(key, this)
     switch (key.type) {
       case KEY_TYPE_INPUT:
+        if (this._lastKey?.type !== KEY_TYPE_INPUT)
+          this._inputBuff = ''
         if (key.value !== KEY_PERIOD) {
           this._inputBuff += key.value;
         } else if (!this._inputBuff.includes(KEY_PERIOD)) {
@@ -222,22 +230,26 @@ export const Calc = class {
             this._inputBuff = '0'
           this._inputBuff += KEY_PERIOD;
         }
-        // this.broadcast(EVENT_INPUT, this._inputBuff)
+        if (this._lastKey?.type === KEY_TYPE_ENTER)
+          this._left = null;
         break;
       case KEY_TYPE_OPERATION:
-        if (this._inputBuff) {
-          if (this._left !== null && this._operation) {
-            this._right = this.parseInput();
-            this.calculate();
-            this._left = this._result;
-            this._right = null;
+        if (this._lastKey?.type !== KEY_TYPE_OPERATION) {
+          if (this._inputBuff) {
+            if (this._left !== null && this._operation) {
+              this._right = this.parseInput();
+              this.calculate();
+              this._left = this._result;
+              this._right = null;
+            } else {
+              this._left = this.parseInput(false);
+              this._result = this._left;
+            }
           } else {
-            this._left = this.parseInput();
-            this._result = this._left;
+            this._right = null;
+            if (this._left === null)
+              this._left = this._result
           }
-        } else {
-          if (this._left === null)
-            this._left = this._result
         }
         this._operation = key.value
         break;
@@ -247,7 +259,7 @@ export const Calc = class {
             this.reset();
             break;
           case KEY_DELETE:
-            if (this._inputBuff) {
+            if (this._inputBuff && (this._lastKey?.type === KEY_TYPE_INPUT || this._lastKey?.value === KEY_DELETE)) {
               if (this._inputBuff.length === 1)
                 this._inputBuff = '0'
               else
@@ -261,15 +273,17 @@ export const Calc = class {
         break;
       case KEY_TYPE_ENTER:
         if (this._operation) {
-          if (this._inputBuff) {
-            this._right = this.parseInput();
-          } else {
+          if (this._lastKey?.type !== KEY_TYPE_INPUT)
             this._left = this._result;
-          }
+          if (this._left === null)
+            this._left = this._inputBuff ? this.parseInput() : this._result;
+          if (this._right === null)
+            this._right = this._inputBuff ? this.parseInput() : this._result;
           this.calculate();
         }
         break;
     }
+    this._lastKey = key
     this.broadcast(EVENT_INPUT, key.value)
     return key.value
   }
@@ -293,7 +307,7 @@ export const Calc = class {
         default:
           break;
       }
-      this._result = res;
+      this._result = this.round(res);
       this.broadcast(EVENT_CALC, this.output)
       this._history.push({
         left: this._left,

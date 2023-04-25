@@ -59,7 +59,7 @@ const HistoryIcon = styled.div`
 
 const SCREEN_MAX_DIGS = 12
 
-const Screen = ({value = '0', expr= '', historyClick = ()=>{}}) => {
+const Screen = ({value = '', expr= '', historyClick = null}) => {
   const [scale, setScale] = useState(1)
 
   useEffect(() => {
@@ -70,7 +70,7 @@ const Screen = ({value = '0', expr= '', historyClick = ()=>{}}) => {
 
   return (
     <Wrapper>
-      <Expr onClick={expr && historyClick} style={expr ? {cursor: 'pointer'} : {}}>{expr}</Expr>
+      <Expr onClick={expr ? historyClick : null} style={expr ? {cursor: 'pointer'} : {}}>{expr}</Expr>
       <Output scale={scale}>{value}</Output>
       <HistoryIcon className="material-symbols-outlined" onClick={historyClick}>history</HistoryIcon>
     </Wrapper>

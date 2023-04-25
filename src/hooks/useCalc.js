@@ -1,10 +1,10 @@
 import {useCallback, useEffect, useRef, useState} from "react";
-import {Calc, eventTypes} from "../services/calc2.mjs";
+import {Calc, eventTypes} from "../services/calc.mjs";
 
 export const useCalc = (onInput = null) => {
   const calc = useRef(new Calc())
   const [output, setOutput] = useState('');
-  const [expression, setExpression] = useState('');
+  const [expr, setExpr] = useState('');
 
   const calcInstance = () => calc?.current
 
@@ -12,8 +12,9 @@ export const useCalc = (onInput = null) => {
     if (calcInstance() && output !== calcInstance().output) {
       setOutput(calcInstance().output)
     }
-    if (calcInstance() && expression !== calcInstance().expr)
-      setExpression(calcInstance().expr)
+    // console.log(`key: ${key}, expression: "${expr}", expr: "${calcInstance().expr}"`)
+    // if (calcInstance() && (expr !== calcInstance().expr))    // TODO: Doesn't work correctly
+      setExpr(calcInstance().expr)
     if (onInput) {
       onInput(key)
     }
@@ -21,7 +22,7 @@ export const useCalc = (onInput = null) => {
 
   const calcCalculateHandler = () => {
     setOutput(calcInstance().output)
-    setExpression(calcInstance().expr)
+    setExpr(calcInstance().expr)
   }
 
   const putKey = (key) => {
@@ -31,8 +32,7 @@ export const useCalc = (onInput = null) => {
   useEffect(() => {
     calcInstance().addListener(eventTypes.EVENT_INPUT, calcInputHandler)
     calcInstance().addListener(eventTypes.EVENT_CALC, calcCalculateHandler)
-    setOutput(calcInstance().output)
-    setExpression(calcInstance().expr)
+    calcCalculateHandler()
   }, [])
 
   const keydownListener = useCallback(keydownEvent => {
@@ -50,5 +50,5 @@ export const useCalc = (onInput = null) => {
 
   const history = calcInstance().history;
 
-  return { output, expression, history, putKey }
+  return { output, expr, history, putKey }
 }

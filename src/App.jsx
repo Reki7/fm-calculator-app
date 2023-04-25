@@ -15,9 +15,10 @@ import Calculator from "./components/Calculator";
 // --10. Expression show (and mode 'valRes')
 // --11. String length limit (change font size, science notation)
 // --12. Group delimiter
-// 13. Operations history
+// --13. Operations history
 // 14. Show history (with animation)
 // 15. Save current theme in LocalStorage
+// 16. prefers-color-scheme (https://web.dev/prefers-color-scheme/)
 
 
 function App() {

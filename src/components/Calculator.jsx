@@ -43,7 +43,7 @@ const Calculator = () => {
     }
   }, [triggerKey]);
 
-  const { output, expression, history, putKey } = useCalc(handleCalcInput)
+  const { output, expr, history, putKey } = useCalc(handleCalcInput)
 
   const historyClickHandler = () => {
     setShowHistory(prev => !prev)
@@ -53,7 +53,7 @@ const Calculator = () => {
     <KeydownContext.Provider value={buttonPressed}>
       <Wrapper>
         <Header />
-        <Screen value={output} expr={expression} historyClick={historyClickHandler}/>
+        <Screen value={output} expr={expr} historyClick={historyClickHandler}/>
         {
           showHistory
           ? <History history={history} />

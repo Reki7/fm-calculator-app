@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import React, {useContext} from "react";
 import {KeydownContext} from "./Calculator";
-import {keyTypes} from "../services/calc2";
+import {keyTypes} from "../services/calc.mjs";
 
 const Button = styled.button`
   padding: 16px 0;
