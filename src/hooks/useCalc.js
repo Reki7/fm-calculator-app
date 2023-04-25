@@ -1,5 +1,5 @@
 import {useCallback, useEffect, useRef, useState} from "react";
-import {Calc, eventTypes} from "../services/calc.mjs";
+import {Calc, eventTypes} from "../services/calc";
 
 export const useCalc = (onInput = null) => {
   const calc = useRef(new Calc())

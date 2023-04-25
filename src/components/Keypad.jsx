@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from "styled-components";
-import {acceptedKeys} from "../services/calc.mjs";
+import {acceptedKeys} from "../services/calc";
 import CalcButton from "./CalcButton";
 
 const Wrapper = styled.div`
