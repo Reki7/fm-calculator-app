@@ -25,8 +25,11 @@ const Wrapper = styled.div`
 const Scrollable = styled.div`
   width: 100%;
   height: 100%;
-  padding-right: 5px;
+  //padding-right: 5px;
   overflow: auto;
+  background-color: var(--keypad_bg);
+  padding: 10px;
+  border-radius: 5px;
   ::-webkit-scrollbar {
     width: 10px;
   }
