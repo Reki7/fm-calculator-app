@@ -1,10 +1,9 @@
-import React, {createContext, useCallback, useEffect, useState} from 'react';
+import React, {createContext, useEffect, useState} from 'react';
 import styled from "styled-components";
 import Keypad from "./Keypad";
 import Screen from "./Screen";
 import Header from "./Header";
 import {useCalc} from "../hooks/useCalc";
-import {useButtonPressed} from "../hooks/useButtonPressed";
 import History from "./History";
 
 const Wrapper = styled.div`

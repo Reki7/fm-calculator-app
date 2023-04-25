@@ -9,8 +9,8 @@ export const useCalc = (onInput = null) => {
   const calcInstance = () => calc?.current
 
   const calcInputHandler = (key) => {
-    if (calcInstance() && output !== calcInstance().output) {
-      setOutput(calcInstance().output)
+    if (calcInstance() && output !== calcInstance().formattedOutput) {
+      setOutput(calcInstance().formattedOutput)
     }
     // console.log(`key: ${key}, expression: "${expr}", expr: "${calcInstance().expr}"`)
     // if (calcInstance() && (expr !== calcInstance().expr))    // TODO: Doesn't work correctly
@@ -21,7 +21,7 @@ export const useCalc = (onInput = null) => {
   }
 
   const calcCalculateHandler = () => {
-    setOutput(calcInstance().output)
+    setOutput(calcInstance().formattedOutput)
     setExpr(calcInstance().expr)
   }
 

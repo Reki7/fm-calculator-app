@@ -121,15 +121,6 @@ export const calc_keys = [
 ]
 
 export let acceptedKeys = {}
-calc_keys.forEach(key => {
-  acceptedKeys[key.value] = key
-  if (key.label)
-    acceptedKeys[key.label] = key
-  if (key.aliases)
-    key.aliases.forEach(alias => {
-      acceptedKeys[alias] = key
-    })
-})
 
 
 // const MAX_NUMBER = 1.0e15
@@ -137,6 +128,21 @@ calc_keys.forEach(key => {
 const MAX_FRACTIONAL_LENGTH = 10;
 const MAX_NORMAL = 9999999999;
 
+const getNavigatorLanguage = () => {
+  if (navigator.languages && navigator.languages.length) {
+    return navigator.languages[0];
+  } else {
+    return navigator.userLanguage || navigator.language || navigator.browserLanguage || 'en';
+  }
+}
+
+function getDecimalSeparator(locale) {
+  const numberWithDecimalSeparator = 1.1;
+  return Intl.NumberFormat(locale)
+    .formatToParts(numberWithDecimalSeparator)
+    .find(part => part.type === 'decimal')
+    .value;
+}
 
 /*
 properties:
@@ -163,23 +169,38 @@ events:
 
 
 export const Calc = class {
-  constructor(locale = 'fr-FR') {
+  constructor(locale = getNavigatorLanguage()) {
     this.reset = this.reset.bind(this);
     this.putKey = this.putKey.bind(this);
     this.evalExpr = this.evalExpr.bind(this);
     this.calculate = this.calculate.bind(this);
-    this._locale = locale;
+    // this.formattedOutput = this.formattedOutput.bind(this);
+    this._locale = 'en-US'; // locale;
     this._formatOptions = {
       style: 'decimal',
       notation: 'standard', // "scientific", "engineering", "compact"
-      useGrouping: 'auto', // 'always', 'min2'
-      maximumFractionDigits: 10,
+      useGrouping: false, // 'auto', 'always', 'min2', false
+      maximumFractionDigits: MAX_FRACTIONAL_LENGTH,
     }
     this._listeners = {}
     this._listeners[EVENT_INPUT] = []
     this._listeners[EVENT_CALC] = []
     this._history = [];
+    this.setup();
     this.reset();
+  }
+
+  setup() {
+    calc_keys.find(key => key.value === KEY_PERIOD).label = getDecimalSeparator(this._locale)
+    calc_keys.forEach(key => {
+      acceptedKeys[key.value] = key
+      if (key.label)
+        acceptedKeys[key.label] = key
+      if (key.aliases)
+        key.aliases.forEach(alias => {
+          acceptedKeys[alias] = key
+        })
+    })
   }
 
   reset() {
@@ -210,7 +231,7 @@ export const Calc = class {
     [...s].forEach((key) => this.putKey(key))
   }
 
-  round(n) {
+  round = (n) => {
     return parseFloat(n.toFixed(MAX_FRACTIONAL_LENGTH))
   }
 
@@ -221,7 +242,7 @@ export const Calc = class {
     // console.log(key, this)
     switch (key.type) {
       case KEY_TYPE_INPUT:
-        if (this._lastKey?.type !== KEY_TYPE_INPUT)
+        if (this._lastKey?.type !== KEY_TYPE_INPUT && this._lastKey?.value !== KEY_DELETE)
           this._inputBuff = ''
         if (key.value !== KEY_PERIOD) {
           this._inputBuff += key.value;
@@ -329,9 +350,16 @@ export const Calc = class {
     return this._inputBuff ? this.parseInput(false) : this._result;
   }
 
-  formatOutput() {
+  get formattedOutput() {
+    const _formatOptions = {
+      style: 'decimal',
+      notation: 'standard', // "scientific", "engineering", "compact"
+      useGrouping: false, // 'auto', 'always', 'min2', false
+      maximumFractionDigits: MAX_FRACTIONAL_LENGTH,
+    }
     // https://stackoverflow.com/questions/1074660/with-a-browser-how-do-i-know-which-decimal-separator-does-the-operating-system
-    return this._inputBuff ? this._inputBuff : this._result.toLocaleString(this._locale, this._formatOptions);
+    // return this._inputBuff ? this._inputBuff : this._result.toLocaleString(this._locale, this._formatOptions);
+    return this.output.toLocaleString(this._locale, _formatOptions);
   }
 
   get expr() {

@@ -97,4 +97,9 @@ body[data-theme='theme3'] {
 .attribution {
     margin-top: auto;
     color: var(--main-text-color);
+    font-size: 12px;
+}
+
+.attribution a {
+    color: var(--keys-blue-hover);
 }

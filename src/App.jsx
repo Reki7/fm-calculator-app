@@ -19,6 +19,7 @@ import Calculator from "./components/Calculator";
 // 14. Show history (with animation)
 // 15. Save current theme in LocalStorage
 // 16. prefers-color-scheme (https://web.dev/prefers-color-scheme/)
+// 17. Adjust font size for the output (https://dev.to/jankapunkt/make-text-fit-it-s-parent-size-using-javascript-m40)
 
 
 function App() {
